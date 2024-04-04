@@ -1,10 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { View, Text, StyleSheet  } from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
-import axios from 'axios';
-interface Props {
 
-}
 interface ChildProps {
     ingredients: string[];
   }

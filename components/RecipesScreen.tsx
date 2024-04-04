@@ -40,11 +40,22 @@ const resetState = () => {
       }
     });
   }
+  function shuffleArray(array: string[]): string[] {
+    const shuffledArray = [...array];
+    
+    for (let i = shuffledArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+    }
+    return shuffledArray;
+}
  
   async function fetchRecipes() {
     try {
       await axios.get('http://192.168.0.50:5003/Siri/Recipes').then(response => {
-        const mappedRecipes: Recipe[] = response.data.map((recipeData: any) => ({
+       
+        const shuffledResponse = shuffleArray(response.data)
+        const mappedRecipes: Recipe[] = shuffledResponse.map((recipeData: any) => ({
           id: recipeData[0],
           name: recipeData[1],
           url: recipeData[2],
