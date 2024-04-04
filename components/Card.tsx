@@ -26,7 +26,6 @@ const Card: React.FC<CardProps> = ({ recipe, onClick }) => {
   
     let buttonColor = selected ? "red" : "green";
   
-    
     return (
         <View style={styles.card}>
         <View style={styles.cardimage}>

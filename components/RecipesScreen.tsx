@@ -17,28 +17,35 @@ export interface Recipe {
   image: string
 }
 
+export interface Ingredient {
+  ingredient: string;
+
+}
+
 export default function RecipesScreen({ path }: { path: string }) {
 
   const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [marked, setMarked] = useState<Recipe[]>([]);
+  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+  const [idList, setMarked] = useState<number[]>([]);
   const [refreshing, setRefreshing] = React.useState(false);
+
   const onRefresh = () => {
-    console.log("REFRESHING-----")
+    resetState();
 }
+
+const resetState = () => {
+  fetchRecipes()
+};
   useEffect(() => {
     fetchRecipes()
   }, [])
   const addToList = (recipe: Recipe) => {
-    setMarked(prevRecipeList => [...prevRecipeList, recipe]);
-    console.log("ADDED TO LIST", marked)
+    setMarked(prevRecipeList => [...prevRecipeList, recipe.id]);
   }
-  const confirmSelection = () => {
-    console.log("CONFIRMATION COMPLETE----", marked[0])
-  }
-
+ 
   async function fetchRecipes() {
     try {
-      await axios.get('http://192.168.0.50:5002/Siri/Recipes').then(response => {
+      await axios.get('http://192.168.0.50:5003/Siri/Recipes').then(response => {
         const mappedRecipes: Recipe[] = response.data.map((recipeData: any) => ({
           id: recipeData[0],
           name: recipeData[1],
@@ -58,12 +65,28 @@ export default function RecipesScreen({ path }: { path: string }) {
       console.error('Error fetching recipes:', error);
       // Optionally, you can throw the error to be handled by the caller
       throw error;
+    }
   }
-  }
+  async function confirmRecipes() {
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    // {"idList":[58]}
+    axios.post('http://192.168.0.50:5003/Siri/ReactRecipes', JSON.stringify({ idList }), { headers })
+    .then(response => {
+      // Handle successful response
+      setIngredients(response.data)
+    })
+    .catch(error => {
+      // Handle error
+      console.error('Error:', error);
+    });
+}
+  
   return (
     <View>
-      {marked.length > 0 && (
-        <Button title="Confirm Selection" onPress={confirmSelection} />
+      {idList.length > 0 && (
+        <Button title="Confirm Selection" onPress={confirmRecipes} />
       )}
       <FlatList
           data={recipes}
@@ -73,7 +96,6 @@ export default function RecipesScreen({ path }: { path: string }) {
           }
       />
     </View>
-    
   );
 }
 
