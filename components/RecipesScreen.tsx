@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
-import { API_ENDPOINTS } from '../config';
 import { StyleSheet, FlatList, RefreshControl, Button } from 'react-native';
-import { BarCodeScanner } from 'expo-barcode-scanner';
+import ModalScreen from '@/app/modal';
 
 import Card from './Card'
 
@@ -16,16 +15,9 @@ export interface Recipe {
   price: number,
   image: string
 }
-
-export interface Ingredient {
-  ingredient: string;
-
-}
-
-export default function RecipesScreen({ path }: { path: string }) {
+export default function RecipesScreen({}: { path: string }) {
 
   const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [idList, setMarked] = useState<number[]>([]);
   const [refreshing, setRefreshing] = React.useState(false);
 
@@ -39,8 +31,14 @@ const resetState = () => {
   useEffect(() => {
     fetchRecipes()
   }, [])
-  const addToList = (recipe: Recipe) => {
-    setMarked(prevRecipeList => [...prevRecipeList, recipe.id]);
+  const addToList = (recipe: Recipe, selected: boolean) => {
+    setMarked(prevRecipeList => {
+      if (selected) {
+        return prevRecipeList.filter(id => id !== recipe.id);
+      } else {
+        return [...prevRecipeList, recipe.id];
+      }
+    });
   }
  
   async function fetchRecipes() {
@@ -71,30 +69,26 @@ const resetState = () => {
     const headers = {
       'Content-Type': 'application/json',
     };
-    // {"idList":[58]}
     axios.post('http://192.168.0.50:5003/Siri/ReactRecipes', JSON.stringify({ idList }), { headers })
-    .then(response => {
-      // Handle successful response
-      setIngredients(response.data)
-    })
     .catch(error => {
-      // Handle error
       console.error('Error:', error);
     });
-}
-  
+}  
   return (
     <View>
-      {idList.length > 0 && (
+      {idList.length > 0 && (   
         <Button title="Confirm Selection" onPress={confirmRecipes} />
+        
       )}
+     
       <FlatList
           data={recipes}
-          renderItem={({item}) => <Card index={item.id} onClick={(recipe: Recipe) => addToList(recipe)} recipe={item} />}
+          renderItem={({item}) => <Card index={item.id} onClick={(recipe: Recipe, selected: boolean) => addToList(recipe, selected)} recipe={item} />}
           refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
       />
+      
     </View>
   );
 }

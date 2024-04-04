@@ -1,5 +1,5 @@
 
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import ImageOverlay from './ImageOverlay';
 import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import { Recipe } from './RecipesScreen';
