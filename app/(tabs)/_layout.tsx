@@ -19,29 +19,6 @@ function TabBarIcon(props: {
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
-  const [ingredients, setIngredients] = useState<string[]>([]);
-
-  useEffect(() => {
-    fetchIngredients()
-  }, [])
-
-  async function fetchIngredients() {
-    try {
-      await axios.get('http://192.168.0.50:5003/Siri/GetCurrentIngredients').then(response => {
-        setIngredients(response.data)
-       
-      })
-      .catch(error => {
-        console.error('Error fetching recipes:', error);
-      });
-      // Process the response data or update your application state
-  } catch (error) {
-      // If an error occurred during the request, handle the error
-      console.error('Error fetching recipes:', error);
-      // Optionally, you can throw the error to be handled by the caller
-      throw error;
-    }
-  }
 
   return (
     <Tabs

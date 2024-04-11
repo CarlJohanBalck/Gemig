@@ -22,7 +22,9 @@ export default function RecipesScreen({}: { path: string }) {
   const [refreshing, setRefreshing] = React.useState(false);
 
   const onRefresh = () => {
+    setRefreshing(true)
     resetState();
+    setRefreshing(false)
 }
 
 const resetState = () => {
@@ -66,12 +68,12 @@ const resetState = () => {
         setRecipes(mappedRecipes)
       })
       .catch(error => {
-        console.error('Error fetching recipes:', error);
+        console.error('Error fetching recipesxxxx:', error);
       });
       // Process the response data or update your application state
   } catch (error) {
       // If an error occurred during the request, handle the error
-      console.error('Error fetching recipes:', error);
+      console.error('Error fetching recipes!!!:', error);
       // Optionally, you can throw the error to be handled by the caller
       throw error;
     }
