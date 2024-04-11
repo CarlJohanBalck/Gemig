@@ -28,7 +28,7 @@ const ModalScreen: React.FC = () => {
       // Process the response data or update your application state
   } catch (error) {
       // If an error occurred during the request, handle the error
-      console.error('Error fetching recipes:', error);
+     
       // Optionally, you can throw the error to be handled by the caller
       throw error;
     }
